@@ -1,5 +1,23 @@
 // Seed script for Pepper Labs — Tenancy Agreement Clause Review & Amendment System
-// Run: bun run prisma/seed.ts
+// Run: bun run db:seed  (or: bun run prisma/seed.ts)
+import { config } from "dotenv";
+import { resolve } from "path";
+
+// Explicitly load .env from the project root so this script works regardless
+// of which tool launches it (bun, tsx, prisma db seed, node). This prevents
+// the "Environment variable not found: DATABASE_URL" Prisma validation error.
+config({ path: resolve(process.cwd(), ".env") });
+
+if (!process.env.DATABASE_URL) {
+  console.error(
+    "\n❌ DATABASE_URL is not set.\n\n" +
+      "Fix: create a .env file in the project root (next to package.json) with:\n\n" +
+      '  DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres\n\n' +
+      "Then re-run: bun run db:seed\n"
+  );
+  process.exit(1);
+}
+
 import { PrismaClient } from "@prisma/client";
 
 const db = new PrismaClient();
