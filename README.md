@@ -42,11 +42,20 @@ cd TA-Project-Office-Premises
 bun install   # or: npm install
 
 # Set up the database
-cp .env.example .env          # then edit DATABASE_URL if needed
-bun run db:push               # create SQLite schema
+cp .env.example .env          # then set DATABASE_URL (Supabase Postgres recommended; SQLite fallback supported)
+bun run db:push               # create schema in your database
 bun run db:generate           # generate Prisma client
 bun run prisma/seed.ts        # seed dummy data (templates, users, drafts, audit logs)
 ```
+
+### Database
+
+The Prisma schema (`prisma/schema.prisma`) targets **PostgreSQL** by default — recommended for production and tested with **Supabase**.
+
+- **Supabase setup**: create a project at https://supabase.com, then copy the connection string from *Project Settings → Database → Connection string* into `.env` as `DATABASE_URL`. URL-encode any special characters in the password (e.g. `!` → `%21`).
+- **Local SQLite fallback**: for quick local prototyping you can switch the `provider` in `prisma/schema.prisma` to `sqlite` and use `DATABASE_URL="file:./db/custom.db"`. Re-run `bun run db:push` after switching.
+
+The seed script populates: 4 users (BU/SLO/Admin), 3 templates (including the PERKESO landlord template with 14 mapped clauses), 3 offer letters, 4 drafts at varied statuses, generated clause amendments, and 16 audit-log entries.
 
 ### Running the dev server
 
@@ -104,7 +113,7 @@ src/
 | Framework | Next.js 16 (App Router) |
 | Language | TypeScript 5 |
 | Styling | Tailwind CSS 4 + shadcn/ui (New York) |
-| Database | Prisma ORM + SQLite (dummy DB) |
+| Database | Prisma ORM + PostgreSQL (Supabase) — SQLite fallback for local prototyping |
 | State | Zustand (client) |
 | Icons | lucide-react |
 | Toasts | sonner |
