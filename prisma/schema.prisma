@@ -1,0 +1,152 @@
+// Prisma schema for Pepper Labs — Tenancy Agreement Clause Review & Amendment System
+// PRD v2.0 (replaces v1.0 LMS). Dummy database (SQLite) per PRD Section 8.2.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---------------------------------------------------------------------------
+// Users & Roles (PRD §3, §6.1) — Business Unit, Senior Legal Officer, Admin
+// ---------------------------------------------------------------------------
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  password  String // dummy plaintext for simulation only
+  role      String   @default("BU") // BU | SLO | ADMIN
+  department String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  drafts        Draft[]         @relation("DraftCreatedBy")
+  auditLogs     AuditLog[]
+  amendments    DraftClauseAmendment[] @relation("AmendmentUpdatedBy")
+}
+
+// ---------------------------------------------------------------------------
+// Templates (PRD §9.1) + Template Clauses (PRD §9.2)
+// ---------------------------------------------------------------------------
+model Template {
+  id           String   @id @default(cuid())
+  name         String
+  version      String   @default("1.0")
+  landlordName String?
+  description  String?
+  status       String   @default("active") // active | archived
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  clauses      TemplateClause[]
+  drafts       Draft[]
+}
+
+model TemplateClause {
+  id           String   @id @default(cuid())
+  templateId   String
+  clauseNumber String   // e.g. "4.1"
+  title        String   // e.g. "Kadar Sewa"
+  originalText String
+  mappedField  String   // e.g. "rentalRate" — maps to OfferLetter field
+  order        Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  template     Template @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  amendments   DraftClauseAmendment[]
+
+  @@index([templateId])
+}
+
+// ---------------------------------------------------------------------------
+// Offer Letters / Surat Tawaran Penyewaan (PRD §9.3)
+// ---------------------------------------------------------------------------
+model OfferLetter {
+  id                String   @id @default(cuid())
+  tenantName        String
+  rentalRate        Float
+  tenancyPeriod     String
+  commencementDate  String   // ISO date string
+  deposit           Float
+  premisesUse       String
+  maintenanceTerms  String
+  utilitiesTerms    String
+  renewalTerms      String
+  terminationTerms  String
+  defaultTerms      String
+  specialConditions String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  drafts            Draft[]
+}
+
+// ---------------------------------------------------------------------------
+// Drafts (PRD §9.4) + Draft Clause Amendments (PRD §9.5)
+// ---------------------------------------------------------------------------
+model Draft {
+  id             String   @id @default(cuid())
+  title          String
+  templateId     String
+  offerLetterId  String
+  createdBy      String
+  status         String   @default("draft") // draft | pending_review | returned | approved | rejected
+  priority       String   @default("normal") // normal | high | urgent
+  createdDate    DateTime @default(now())
+  lastUpdated    DateTime @updatedAt
+
+  template       Template     @relation(fields: [templateId], references: [id])
+  offerLetter    OfferLetter  @relation(fields: [offerLetterId], references: [id])
+  creator        User         @relation("DraftCreatedBy", fields: [createdBy], references: [id])
+  amendments     DraftClauseAmendment[]
+  auditLogs      AuditLog[]
+
+  @@index([status])
+  @@index([createdBy])
+}
+
+model DraftClauseAmendment {
+  id                    String   @id @default(cuid())
+  draftId               String
+  clauseId              String
+  issueIdentified       String   // percanggahan / ketiadaan maklumat / selari
+  reasonForAmendment    String
+  offerLetterReference  String
+  amendedText           String   // draft amended text or "[Untuk Pengesahan Business Unit]"
+  sloDecision           String   @default("pending") // pending | accepted | edited | rejected | needs_bu_input
+  sloComment            String?
+  sloEditedText         String?  // SLO manual edit (kept separate from system suggestion per NFR §Integrity Data)
+  updatedAt             DateTime @updatedAt
+  updatedBy             String?
+
+  draft                 Draft         @relation(fields: [draftId], references: [id], onDelete: Cascade)
+  clause                TemplateClause @relation(fields: [clauseId], references: [id])
+  updater               User?         @relation("AmendmentUpdatedBy", fields: [updatedBy], references: [id])
+
+  @@index([draftId])
+  @@index([sloDecision])
+}
+
+// ---------------------------------------------------------------------------
+// Audit Log (PRD §9.6)
+// ---------------------------------------------------------------------------
+model AuditLog {
+  id        String   @id @default(cuid())
+  draftId   String?
+  userId    String
+  userName  String
+  userRole  String
+  action    String   // e.g. "Draf dihantar untuk semakan"
+  details   String?
+  timestamp DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id])
+  draft     Draft?   @relation(fields: [draftId], references: [id], onDelete: Cascade)
+
+  @@index([draftId])
+  @@index([timestamp])
+}

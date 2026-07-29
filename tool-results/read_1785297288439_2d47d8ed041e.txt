@@ -1,0 +1,873 @@
+     1→     1→DOKUMEN KEPERLUAN PRODUK
+     2→     2→
+     3→     3→(Product Requirement Document — PRD)
+     4→     4→
+     5→     5→Sistem Semakan dan Pindaan Klausa Perjanjian Penyewaan
+     6→     6→
+     7→     7→(Tenancy Agreement Clause Review & Amendment System)
+     8→     8→
+     9→     9→Dibina menggunakan React.js, Pangkalan Data Dummy, dan Platform z.ai
+    10→    10→(Model GLM 5.2)
+    11→    11→
+    12→    12→Disediakan oleh: Pasukan Kejuruteraan Perisian
+    13→    13→
+    14→    14→Syarikat: Pepper Labs
+    15→    15→
+    16→    16→Lokasi: Malaysia
+    17→    17→
+    18→    18→Tarikh: 29 Julai 2026
+    19→    19→
+    20→    20→Versi Dokumen: 2.0 (Draf — Menggantikan Versi 1.0 LMS)
+    21→    21→
+    22→    22→Kawalan Dokumen
+    23→    23→
+    24→    24→  ------------------------------------------------------------------------
+    25→    25→  Versi      Tarikh          Penulis               Perihal Perubahan
+    26→    26→  ---------- --------------- --------------------- -----------------------
+    27→    27→  1.0        29 Julai 2026   Pasukan Kejuruteraan  Draf awal PRD (Sistem
+    28→    28→                             Perisian, Pepper Labs Pengurusan Pembelajaran
+    29→    29→                                                   / LMS)
+    30→    30→
+    31→    31→  2.0        29 Julai 2026   Pasukan Kejuruteraan  Digantikan sepenuhnya
+    32→    32→                             Perisian, Pepper Labs dengan skop baharu:
+    33→    33→                                                   Sistem Semakan dan
+    34→    34→                                                   Pindaan Klausa
+    35→    35→                                                   Perjanjian Penyewaan
+    36→    36→                                                   bagi memudahkan
+    37→    37→                                                   Business Unit dan
+    38→    38→                                                   Pegawai Undang-Undang
+    39→    39→                                                   Kanan
+    40→    40→  ------------------------------------------------------------------------
+    41→    41→
+    42→    42→1. Pengenalan
+    43→    43→
+    44→    44→1.1 Tujuan Dokumen
+    45→    45→
+    46→    46→Dokumen ini menggariskan keperluan produk bagi pembangunan sebuah sistem
+    47→    47→dalaman yang membolehkan Business Unit ("BU") menyediakan draf
+    48→    48→Perjanjian Penyewaan dengan mudah berdasarkan templat sedia ada dan
+    49→    49→Surat Tawaran Penyewaan, serta membolehkan Pegawai Undang-Undang Kanan
+    50→    50→("Senior Legal Officer" / "SLO") menyemak dan mengesahkan (vet) pindaan
+    51→    51→tersebut secara cekap, tersusun dan telus. Sistem ini bukan alat
+    52→    52→penjanaan kontrak automatik sepenuhnya — ia adalah alat bantuan
+    53→    53→(assistive tool) yang membandingkan templat dengan surat tawaran,
+    54→    54→mencadangkan pindaan, dan menyusun aliran kerja semakan antara BU dan
+    55→    55→SLO.
+    56→    56→
+    57→    57→1.2 Latar Belakang
+    58→    58→
+    59→    59→Pada masa ini, proses menyediakan Perjanjian Penyewaan dilakukan secara
+    60→    60→manual: BU mengeluarkan Surat Tawaran Penyewaan, kemudian pegawai
+    61→    61→undang-undang perlu membandingkan setiap klausa templat Perjanjian
+    62→    62→Penyewaan dengan surat tawaran tersebut secara manual bagi memastikan
+    63→    63→keselarasan terma komersial (kadar sewa, tempoh, deposit, dan
+    64→    64→lain-lain). Proses ini mengambil masa yang panjang, terdedah kepada
+    65→    65→kesilapan manusia, dan sukar dijejak (tiada rekod audit yang tersusun).
+    66→    66→Sistem ini bertujuan menyediakan platform berpusat untuk menstrukturkan
+    67→    67→proses tersebut, mempercepatkan kitaran semakan, dan memudahkan SLO
+    68→    68→memberi kelulusan (vetting) tanpa mengurangkan ketelitian semakan
+    69→    69→undang-undang.
+    70→    70→
+    71→    71→1.3 Skop Dokumen
+    72→    72→
+    73→    73→Dokumen ini merangkumi objektif produk, pengguna sasaran, keperluan
+    74→    74→fungsian dan bukan fungsian, seni bina teknikal, struktur data dummy,
+    75→    75→aliran kerja (workflow) semakan dan kelulusan, spesifikasi antara muka
+    76→    76→pengguna, garis panduan penggunaan z.ai/GLM 5.2, pelan pembangunan
+    77→    77→berperingkat, kriteria penerimaan, risiko serta andaian projek.
+    78→    78→
+    79→    79→2. Objektif Produk
+    80→    80→
+    81→    81→Objektif utama pembangunan sistem ini adalah seperti berikut:
+    82→    82→
+    83→    83→1.  Memudahkan BU memuat naik/memasukkan maklumat Surat Tawaran
+    84→    84→    Penyewaan dan memilih templat Perjanjian Penyewaan yang berkaitan
+    85→    85→    (contohnya templat PERKESO sebagai Tuan Tanah).
+    86→    86→
+    87→    87→2.  Membolehkan sistem membandingkan secara automatik terma komersial
+    88→    88→    dalam Surat Tawaran Penyewaan dengan klausa sepadan dalam templat,
+    89→    89→    dan menandakan sebarang percanggahan atau maklumat yang tiada.
+    90→    90→
+    91→    91→3.  Menjana cadangan pindaan klausa mengikut format piawai (Ringkasan
+    92→    92→    Pindaan, Semakan Klausa demi Klausa, Klausa Dipinda, Pemerhatian
+    93→    93→    Undang-Undang, Jadual Pindaan) untuk memudahkan rujukan BU dan SLO.
+    94→    94→
+    95→    95→4.  Menyediakan aliran kerja (workflow) jelas: BU menghantar draf →
+    96→    96→    Sistem menjana cadangan pindaan → SLO menyemak, mengulas, meluluskan
+    97→    97→    atau menolak → rekod status disimpan.
+    98→    98→
+    99→    99→5.  Memastikan sebarang maklumat yang tidak dinyatakan dalam Surat
+   100→   100→    Tawaran Penyewaan ditandakan secara jelas sebagai [Untuk Pengesahan
+   101→   101→    Business Unit], tanpa membuat andaian.
+   102→   102→
+   103→   103→6.  Menyediakan jejak audit (audit trail) bagi setiap pindaan, ulasan
+   104→   104→    dan kelulusan untuk tujuan governans dan rujukan masa hadapan.
+   105→   105→
+   106→   106→7.  Membina prototaip berfungsi penuh menggunakan React.js dan pangkalan
+   107→   107→    data dummy, dipercepatkan menggunakan platform z.ai (model GLM 5.2).
+   108→   108→
+   109→   109→3. Pengguna Sasaran (Target Users)
+   110→   110→
+   111→   111→  -----------------------------------------------------------------------
+   112→   112→  Peranan           Perihal                  Keupayaan Utama
+   113→   113→  ----------------- ------------------------ ----------------------------
+   114→   114→  Business Unit     Pihak dalaman yang       Muat naik/isi Surat Tawaran
+   115→   115→  (BU)              mengeluarkan Surat       Penyewaan, pilih templat,
+   116→   116→                    Tawaran Penyewaan dan    jana draf pindaan, hantar
+   117→   117→                    memerlukan draf          untuk semakan SLO, lihat
+   118→   118→                    Perjanjian Penyewaan     status semakan, muat turun
+   119→   119→                                             dokumen akhir
+   120→   120→
+   121→   121→  Pegawai           Peguam dalaman yang      Semak klausa demi klausa,
+   122→   122→  Undang-Undang     bertanggungjawab         tambah ulasan/komen,
+   123→   123→  Kanan (Senior     menyemak dan mengesahkan terima/tolak/pinda cadangan
+   124→   124→  Legal Officer /   (vet) Perjanjian         sistem, luluskan dokumen
+   125→   125→  SLO)              Penyewaan                akhir, lihat sejarah pindaan
+   126→   126→
+   127→   127→  Pentadbir Sistem  Pengurus platform dan    Urus templat Perjanjian
+   128→   128→  (Admin)           templat                  Penyewaan, urus pengguna dan
+   129→   129→                                             peranan, urus tetapan sistem
+   130→   130→  -----------------------------------------------------------------------
+   131→   131→
+   132→   132→4. Skop Projek
+   133→   133→
+   134→   134→4.1 Dalam Skop
+   135→   135→
+   136→   136→-   Aplikasi web berasaskan React.js (Single Page Application) untuk BU
+   137→   137→    dan SLO.
+   138→   138→
+   139→   139→-   Pangkalan data dummy bagi templat Perjanjian Penyewaan, Surat
+   140→   140→    Tawaran Penyewaan, klausa, ulasan dan status kelulusan.
+   141→   141→
+   142→   142→-   Modul input/muat naik Surat Tawaran Penyewaan (borang berstruktur
+   143→   143→    atau muat naik dokumen simulasi).
+   144→   144→
+   145→   145→-   Modul pemilihan templat Perjanjian Penyewaan sedia ada (contohnya
+   146→   146→    templat PERKESO sebagai Tuan Tanah).
+   147→   147→
+   148→   148→-   Modul perbandingan automatik klausa templat lawan terma Surat
+   149→   149→    Tawaran Penyewaan, dengan penandaan percanggahan.
+   150→   150→
+   151→   151→-   Modul penjanaan output mengikut 5 bahagian piawai: Ringkasan
+   152→   152→    Pindaan, Semakan Klausa demi Klausa, Klausa Dipinda, Pemerhatian
+   153→   153→    Undang-Undang, dan Jadual Pindaan.
+   154→   154→
+   155→   155→-   Modul aliran kerja semakan dan kelulusan (submit → review →
+   156→   156→    approve/reject/comment → finalise).
+   157→   157→
+   158→   158→-   Modul ulasan/komen klausa demi klausa oleh SLO (seakan-akan 'track
+   159→   159→    changes' ringkas dalam sistem).
+   160→   160→
+   161→   161→-   Papan pemuka status bagi BU (status penghantaran) dan SLO (senarai
+   162→   162→    draf menunggu semakan).
+   163→   163→
+   164→   164→-   Jejak audit (audit log) bagi setiap tindakan: hantar, pinda, ulas,
+   165→   165→    luluskan, tolak.
+   166→   166→
+   167→   167→-   Eksport draf akhir Perjanjian Penyewaan yang telah dipinda (simulasi
+   168→   168→    format sedia untuk Word/PDF).
+   169→   169→
+   170→   170→4.2 Luar Skop
+   171→   171→
+   172→   172→-   Tandatangan digital sah dari segi undang-undang (digital signature
+   173→   173→    dengan pengesahan pihak ketiga bertauliah) — hanya status
+   174→   174→    'Diluluskan' disimulasikan.
+   175→   175→
+   176→   176→-   Pengesahan pengguna (authentication) sebenar menggunakan pelayan
+   177→   177→    back-end produksi atau Single Sign-On (SSO) organisasi sebenar.
+   178→   178→
+   179→   179→-   Penyimpanan data kekal (persistent) merentasi sesi pelayan
+   180→   180→    pengeluaran (production server) — data dummy akan reset mengikut
+   181→   181→    sesi/simulasi.
+   182→   182→
+   183→   183→-   Integrasi terus dengan sistem pengurusan dokumen (DMS) sedia ada
+   184→   184→    organisasi atau e-mel automatik sebenar.
+   185→   185→
+   186→   186→-   Analisis undang-undang substantif automatik oleh AI tanpa semakan
+   187→   187→    manusia — sistem hanya membantu bandingkan dan cadangkan; kelulusan
+   188→   188→    akhir tetap oleh SLO.
+   189→   189→
+   190→   190→-   Sokongan pelbagai jenis kontrak selain Perjanjian Penyewaan pada
+   191→   191→    fasa ini [Untuk Pengesahan Business Unit sekiranya diperlukan pada
+   192→   192→    fasa akan datang].
+   193→   193→
+   194→   194→5. Aliran Kerja Utama (Core Workflow)
+   195→   195→
+   196→   196→Aliran kerja sistem direka supaya mudah diikuti oleh BU tanpa latar
+   197→   197→belakang undang-undang, sambil memastikan SLO mempunyai kawalan penuh
+   198→   198→terhadap kelulusan akhir.
+   199→   199→
+   200→   200→8.  BU log masuk dan memilih "Cipta Draf Baharu".
+   201→   201→
+   202→   202→9.  BU memilih templat Perjanjian Penyewaan berkaitan daripada senarai
+   203→   203→    templat (contohnya: Templat Perjanjian Penyewaan PERKESO — Tuan
+   204→   204→    Tanah).
+   205→   205→
+   206→   206→10. BU mengisi borang berstruktur bagi terma Surat Tawaran Penyewaan:
+   207→   207→    nama penyewa, kadar sewa, tempoh penyewaan, tarikh kuat kuasa,
+   208→   208→    deposit, penggunaan premis, penyelenggaraan, utiliti, pembaharuan,
+   209→   209→    penamatan, ingkar, dan syarat khas (atau memuat naik dokumen Surat
+   210→   210→    Tawaran Penyewaan untuk diekstrak — lihat 6.2).
+   211→   211→
+   212→   212→11. Sistem membandingkan input BU dengan klausa templat sedia ada dan
+   213→   213→    menjana draf pindaan mengikut format 5 bahagian (Ringkasan Pindaan,
+   214→   214→    Semakan Klausa, Klausa Dipinda, Pemerhatian Undang-Undang, Jadual
+   215→   215→    Pindaan).
+   216→   216→
+   217→   217→12. Sistem menandakan sebarang maklumat yang tidak lengkap sebagai
+   218→   218→    [Untuk Pengesahan Business Unit] dan menyenaraikan sebarang
+   219→   219→    percanggahan yang dikesan.
+   220→   220→
+   221→   221→13. BU menyemak draf cadangan, melengkapkan maklumat yang ditandakan
+   222→   222→    (jika berkaitan), dan menekan "Hantar untuk Semakan SLO".
+   223→   223→
+   224→   224→14. SLO menerima notifikasi draf baharu dalam papan pemuka, membuka
+   225→   225→    draf, dan menyemak klausa demi klausa.
+   226→   226→
+   227→   227→15. Bagi setiap klausa, SLO boleh: (a) Terima cadangan, (b) Pinda
+   228→   228→    cadangan secara manual, (c) Tolak dan berikan ulasan, atau (d)
+   229→   229→    Tandakan sebagai memerlukan input BU lanjut.
+   230→   230→
+   231→   231→16. Setelah semua klausa disemak, SLO meluluskan draf keseluruhan
+   232→   232→    (status: "Diluluskan") atau menghantar semula kepada BU dengan
+   233→   233→    ulasan (status: "Dikembalikan untuk Pindaan").
+   234→   234→
+   235→   235→17. Draf yang diluluskan boleh dieksport/dimuat turun sebagai dokumen
+   236→   236→    akhir sedia untuk proses tandatangan luar sistem.
+   237→   237→
+   238→   238→18. Setiap tindakan (hantar, pinda, ulas, luluskan, tolak) direkodkan
+   239→   239→    dalam jejak audit yang boleh disemak oleh Admin dan SLO.
+   240→   240→
+   241→   241→6. Keperluan Fungsian (Functional Requirements)
+   242→   242→
+   243→   243→6.1 Modul Pengesahan & Log Masuk (Simulasi)
+   244→   244→
+   245→   245→19. Sistem mesti menyediakan skrin log masuk dengan medan e-mel/nama
+   246→   246→    pengguna dan kata laluan.
+   247→   247→
+   248→   248→20. Pengesahan dilakukan terhadap set data dummy pengguna mengikut
+   249→   249→    peranan (BU, SLO, Admin).
+   250→   250→
+   251→   251→21. Sistem mesti menyokong log keluar dan pengurusan sesi ringkas
+   252→   252→    (Context API / localStorage).
+   253→   253→
+   254→   254→6.2 Modul Input Surat Tawaran Penyewaan
+   255→   255→
+   256→   256→22. BU mesti boleh mengisi borang berstruktur dengan medan terma
+   257→   257→    komersial: nama pihak, kadar sewa, tempoh penyewaan, tarikh kuat
+   258→   258→    kuasa, jumlah deposit, kegunaan premis, tanggungjawab
+   259→   259→    penyelenggaraan, tanggungjawab utiliti, terma pembaharuan, terma
+   260→   260→    penamatan, klausa ingkar, dan syarat khas.
+   261→   261→
+   262→   262→23. BU mesti boleh (secara pilihan) memuat naik dokumen Surat Tawaran
+   263→   263→    Penyewaan (format .docx/.pdf simulasi) sebagai rujukan sokongan,
+   264→   264→    dipaparkan bersebelahan borang untuk perbandingan visual.
+   265→   265→
+   266→   266→24. Sistem mesti mengesahkan (validate) medan wajib sebelum membenarkan
+   267→   267→    penjanaan draf; medan yang ditinggalkan kosong akan ditandakan
+   268→   268→    sebagai [Untuk Pengesahan Business Unit].
+   269→   269→
+   270→   270→6.3 Modul Pemilihan & Pengurusan Templat
+   271→   271→
+   272→   272→25. Admin mesti boleh memuat naik, menyunting metadata, dan mengurus
+   273→   273→    versi templat Perjanjian Penyewaan dalam sistem.
+   274→   274→
+   275→   275→26. Setiap templat mesti mempunyai struktur klausa berpecah (contohnya:
+   276→   276→    Klausa 1 — Tempoh, Klausa 2 — Sewa, Klausa 3 — Deposit, dan
+   277→   277→    seterusnya) supaya sistem boleh memetakan setiap klausa kepada medan
+   278→   278→    terma komersial berkaitan.
+   279→   279→
+   280→   280→27. BU mesti boleh memilih templat berkaitan daripada senarai templat
+   281→   281→    aktif semasa mencipta draf baharu.
+   282→   282→
+   283→   283→6.4 Modul Perbandingan & Penjanaan Cadangan Pindaan
+   284→   284→
+   285→   285→28. Sistem mesti membandingkan setiap klausa templat dengan medan/data
+   286→   286→    Surat Tawaran Penyewaan yang berkaitan secara automatik.
+   287→   287→
+   288→   288→29. Sistem mesti menjana output dalam 5 bahagian piawai berikut bagi
+   289→   289→    setiap draf: (a) Ringkasan Pindaan, (b) Semakan Klausa demi Klausa
+   290→   290→    (nombor klausa, isu dikenal pasti, sebab pindaan, rujukan Surat
+   291→   291→    Tawaran), (c) Klausa Dipinda (draf teks klausa sedia
+   292→   292→    dimasukkan), (d) Pemerhatian Undang-Undang
+   293→   293→    (risiko/ketidakselarasan/perkara memerlukan pengesahan BU), (e)
+   294→   294→    Jadual Pindaan (Klausa | Peruntukan Asal | Peruntukan Dipinda |
+   295→   295→    Sebab Pindaan | Rujukan Surat Tawaran).
+   296→   296→
+   297→   297→30. Sistem mesti menandakan mana-mana klausa yang tiada maklumat sepadan
+   298→   298→    dalam Surat Tawaran Penyewaan dengan penanda [Untuk Pengesahan
+   299→   299→    Business Unit] dan TIDAK membuat andaian nilai.
+   300→   300→
+   301→   301→31. Sistem mesti mengekalkan struktur asal, penomboran dan format klausa
+   302→   302→    templat; hanya klausa yang memerlukan pindaan sahaja ditandakan dan
+   303→   303→    diubah.
+   304→   304→
+   305→   305→32. Sekiranya wujud percanggahan antara templat dan Surat Tawaran
+   306→   306→    Penyewaan (contohnya kadar sewa berbeza), sistem mesti memaparkan
+   307→   307→    amaran percanggahan yang jelas berserta cadangan penyelesaian, bukan
+   308→   308→    menyelesaikannya secara automatik tanpa pengesahan manusia.
+   309→   309→
+   310→   310→6.5 Modul Semakan & Kelulusan SLO
+   311→   311→
+   312→   312→33. SLO mesti boleh melihat draf dalam paparan klausa-demi-klausa dengan
+   313→   313→    cadangan sistem dipaparkan bersebelahan klausa asal templat (paparan
+   314→   314→    sisi-bersisi / side-by-side).
+   315→   315→
+   316→   316→34. SLO mesti boleh menambah ulasan/komen pada mana-mana klausa
+   317→   317→    tertentu.
+   318→   318→
+   319→   319→35. SLO mesti boleh menerima, menolak, atau menyunting terus cadangan
+   320→   320→    pindaan bagi setiap klausa.
+   321→   321→
+   322→   322→36. SLO mesti boleh menetapkan status keseluruhan draf: "Diluluskan",
+   323→   323→    "Dikembalikan untuk Pindaan", atau "Ditolak".
+   324→   324→
+   325→   325→37. Apabila draf "Dikembalikan untuk Pindaan", BU mesti menerima
+   326→   326→    notifikasi berserta senarai ulasan SLO yang perlu ditangani.
+   327→   327→
+   328→   328→6.6 Papan Pemuka (Dashboard)
+   329→   329→
+   330→   330→38. Papan pemuka BU mesti memaparkan: senarai draf yang dihantar, status
+   331→   331→    semasa setiap draf (Draf/Menunggu Semakan/Dikembalikan/Diluluskan),
+   332→   332→    dan tindakan seterusnya diperlukan.
+   333→   333→
+   334→   334→39. Papan pemuka SLO mesti memaparkan: senarai draf menunggu semakan
+   335→   335→    (mengikut keutamaan/tarikh hantar), bilangan draf diluluskan, dan
+   336→   336→    bilangan draf dikembalikan.
+   337→   337→
+   338→   338→40. Papan pemuka Admin mesti memaparkan: jumlah templat aktif, jumlah
+   339→   339→    draf keseluruhan, dan statistik ringkas tempoh purata semakan.
+   340→   340→
+   341→   341→6.7 Modul Jejak Audit (Audit Trail)
+   342→   342→
+   343→   343→41. Sistem mesti merekod setiap tindakan (cipta draf, hantar, ulas,
+   344→   344→    pinda, luluskan, tolak) berserta nama pengguna, peranan, dan cap
+   345→   345→    masa (timestamp).
+   346→   346→
+   347→   347→42. Admin dan SLO mesti boleh melihat sejarah penuh sesuatu draf melalui
+   348→   348→    paparan garis masa (timeline view).
+   349→   349→
+   350→   350→6.8 Modul Eksport Dokumen
+   351→   351→
+   352→   352→43. Sistem mesti membolehkan penjanaan/muat turun draf akhir (selepas
+   353→   353→    diluluskan) dalam format yang menyerupai dokumen sedia untuk Word
+   354→   354→    (simulasi, menggunakan data dummy).
+   355→   355→
+   356→   356→44. Dokumen eksport mesti mengekalkan struktur 5 bahagian (Ringkasan
+   357→   357→    Pindaan, Semakan Klausa, Klausa Dipinda, Pemerhatian Undang-Undang,
+   358→   358→    Jadual Pindaan) bagi rujukan BU dan rekod SLO.
+   359→   359→
+   360→   360→6.9 Notifikasi dan Maklum Balas Sistem
+   361→   361→
+   362→   362→45. Sistem mesti memaparkan mesej maklum balas (toast/alert) bagi setiap
+   363→   363→    tindakan penting (draf dihantar, ulasan ditambah, draf
+   364→   364→    diluluskan/ditolak).
+   365→   365→
+   366→   366→46. Sistem mesti memaparkan penunjuk visual (badge/label warna) bagi
+   367→   367→    status draf supaya mudah dikenal pasti pada pandangan pertama
+   368→   368→    (contohnya: kuning = menunggu semakan, hijau = diluluskan, merah =
+   369→   369→    dikembalikan).
+   370→   370→
+   371→   371→7. Keperluan Bukan Fungsian (Non-Functional Requirements)
+   372→   372→
+   373→   373→  -----------------------------------------------------------------------
+   374→   374→  Kategori                 Keperluan
+   375→   375→  ------------------------ ----------------------------------------------
+   376→   376→  Kebolehgunaan            Antara muka BU mesti amat mudah difahami oleh
+   377→   377→  (Usability)              pengguna bukan-peguam (borang berpandu, bahasa
+   378→   378→                           mudah, tiada jargon undang-undang berlebihan
+   379→   379→                           pada paparan input); antara muka SLO mesti
+   380→   380→                           memberi paparan padat dan pantas untuk semakan
+   381→   381→                           pukal (bulk review)
+   382→   382→
+   383→   383→  Responsif                Aplikasi mesti berfungsi dengan baik pada
+   384→   384→                           skrin desktop (keutamaan bagi SLO/semakan
+   385→   385→                           dokumen panjang) dan tablet/mudah alih (bagi
+   386→   386→                           BU semasa bergerak)
+   387→   387→
+   388→   388→  Prestasi                 Paparan perbandingan klausa (side-by-side)
+   389→   389→                           mesti dimuatkan dalam masa kurang 2 saat bagi
+   390→   390→                           draf dengan sehingga 50 klausa data dummy
+   391→   391→
+   392→   392→  Kebolehselenggaraan      Struktur klausa templat dan medan terma
+   393→   393→                           komersial mesti berasingan (data-driven)
+   394→   394→                           supaya templat baharu boleh ditambah tanpa
+   395→   395→                           menulis semula logik perbandingan
+   396→   396→
+   397→   397→  Kebolehskalaan           Struktur data dummy direka supaya mudah
+   398→   398→                           digantikan dengan pangkalan data sebenar dan
+   399→   399→                           enjin perbandingan teks lanjutan (contohnya
+   400→   400→                           diff engine) pada fasa produksi akan datang
+   401→   401→
+   402→   402→  Keserasian Pelayar       Serasi dengan Google Chrome, Microsoft Edge,
+   403→   403→                           Mozilla Firefox (versi terkini)
+   404→   404→
+   405→   405→  Kebolehcapaian           Mematuhi garis panduan asas WCAG 2.1 Tahap AA
+   406→   406→  (Accessibility)          — penting memandangkan SLO mungkin menyemak
+   407→   407→                           dokumen dalam tempoh masa lama
+   408→   408→
+   409→   409→  Integriti Data           Sebarang pindaan oleh SLO ke atas cadangan
+   410→   410→                           sistem mesti disimpan berasingan daripada
+   411→   411→                           cadangan asal bagi tujuan jejak audit (bukan
+   412→   412→                           overwrite)
+   413→   413→
+   414→   414→  Kerahsiaan               Data Surat Tawaran Penyewaan dan terma
+   415→   415→                           komersial adalah sensitif; paparan data dummy
+   416→   416→                           dalam demo mesti mengelakkan penggunaan nama
+   417→   417→                           pihak/organisasi sebenar
+   418→   418→  -----------------------------------------------------------------------
+   419→   419→
+   420→   420→8. Seni Bina Teknikal (Technical Architecture)
+   421→   421→
+   422→   422→8.1 Tindanan Teknologi (Technology Stack)
+   423→   423→
+   424→   424→  -----------------------------------------------------------------------
+   425→   425→  Lapisan                  Teknologi Dicadangkan
+   426→   426→  ------------------------ ----------------------------------------------
+   427→   427→  Bahagian Hadapan         React.js (versi 18+), React Router DOM,
+   428→   428→  (Front-End)              Context API / Redux Toolkit untuk pengurusan
+   429→   429→                           state (status draf, peranan pengguna)
+   430→   430→
+   431→   431→  Reka Bentuk UI           Tailwind CSS atau Material UI (MUI); komponen
+   432→   432→                           paparan sisi-bersisi (side-by-side diff view)
+   433→   433→                           untuk perbandingan klausa
+   434→   434→
+   435→   435→  Perbandingan Teks (Diff) Pustaka seperti diff-match-patch atau jsdiff
+   436→   436→                           untuk memaparkan perbezaan antara klausa asal
+   437→   437→                           dan cadangan pindaan
+   438→   438→
+   439→   439→  Pangkalan Data Dummy     Fail JSON statik / mock data JavaScript
+   440→   440→                           disokong json-server atau MirageJS,
+   441→   441→                           mensimulasikan templat, draf, klausa, ulasan
+   442→   442→                           dan status kelulusan
+   443→   443→
+   444→   444→  Storan Sesi Tempatan     localStorage / sessionStorage bagi simulasi
+   445→   445→                           sesi log masuk dan status draf semasa
+   446→   446→
+   447→   447→  Alat Pembangunan         Platform z.ai menggunakan model bahasa besar
+   448→   448→  Dipercepatkan            GLM 5.2 untuk penjanaan kod, komponen dan
+   449→   449→                           logik perbandingan klausa awal
+   450→   450→
+   451→   451→  Penjanaan Dokumen        Pustaka seperti docx (npm) untuk simulasi
+   452→   452→                           eksport draf akhir ke format menyerupai Word
+   453→   453→
+   454→   454→  Kawalan Versi            Git / GitHub atau GitLab
+   455→   455→
+   456→   456→  Ujian                    Jest dan React Testing Library untuk ujian
+   457→   457→                           unit komponen
+   458→   458→  -----------------------------------------------------------------------
+   459→   459→
+   460→   460→8.2 Rasional Penggunaan Pangkalan Data Dummy
+   461→   461→
+   462→   462→Bagi tujuan prototaip pantas, sistem tidak akan bergantung kepada
+   463→   463→pangkalan data pengeluaran sebenar. Data templat, klausa, draf, ulasan
+   464→   464→dan status kelulusan akan disimpan dalam struktur JSON statik yang
+   465→   465→dimuatkan melalui fail data tempatan atau mock API seperti json-server.
+   466→   466→Pendekatan ini membolehkan pembangunan dan demonstrasi aliran kerja
+   467→   467→penuh (BU → SLO → kelulusan) tanpa keperluan infrastruktur pelayan
+   468→   468→sebenar, sambil kekal serasi dengan reka bentuk skema data akhir (lihat
+   469→   469→Bahagian 9).
+   470→   470→
+   471→   471→8.3 Penggunaan Platform z.ai dan Model GLM 5.2
+   472→   472→
+   473→   473→Pembangunan komponen React, logik perbandingan klausa, dan penjanaan
+   474→   474→cadangan pindaan akan dipercepatkan menggunakan platform z.ai dengan
+   475→   475→model GLM 5.2. Garis panduan penggunaan:
+   476→   476→
+   477→   477→-   GLM 5.2 digunakan untuk menjana rangka komponen React (contohnya
+   478→   478→    komponen paparan sisi-bersisi, borang input terma komersial), logik
+   479→   479→    pemetaan klausa-ke-medan, dan data dummy sampel templat/Surat
+   480→   480→    Tawaran.
+   481→   481→
+   482→   482→-   GLM 5.2 juga boleh digunakan untuk menjana cadangan ayat klausa
+   483→   483→    pindaan berdasarkan pola contoh yang disediakan pasukan
+   484→   484→    undang-undang, tertakluk kepada semakan manusia sepenuhnya oleh SLO
+   485→   485→    sebelum kelulusan akhir.
+   486→   486→
+   487→   487→-   Setiap kod dan cadangan teks klausa yang dijana model mesti disemak
+   488→   488→    (code review bagi kod; semakan undang-undang oleh SLO bagi kandungan
+   489→   489→    klausa) sebelum digunakan.
+   490→   490→
+   491→   491→-   Prompt yang digunakan hendaklah didokumentasikan bagi tujuan
+   492→   492→    kebolehulangan (reproducibility).
+   493→   493→
+   494→   494→-   Kandungan sensitif organisasi sebenar (nama penyewa sebenar, kadar
+   495→   495→    sewa sebenar PERKESO) tidak boleh dimasukkan ke dalam prompt yang
+   496→   496→    dihantar ke platform z.ai; gunakan data dummy/samaran sahaja semasa
+   497→   497→    pembangunan [Untuk Pengesahan Business Unit berkaitan dasar
+   498→   498→    keselamatan data].
+   499→   499→
+   500→   500→8.4 Struktur Folder Cadangan (React)
+   501→   501→
+   502→   502→-   /src/components — komponen boleh guna semula (ClauseCard,
+   503→   503→    DiffViewer, StatusBadge, CommentThread, FormField)
+   504→   504→
+   505→   505→-   /src/pages — halaman utama (BUDashboard, CreateDraft, ClauseReview,
+   506→   506→    SLODashboard, DraftHistory, TemplateManager)
+   507→   507→
+   508→   508→-   /src/data — data dummy JSON (templates.json, drafts.json,
+   509→   509→    clauses.json, comments.json, users.json, auditLog.json)
+   510→   510→
+   511→   511→-   /src/context — Context API bagi pengesahan dan status draf global
+   512→   512→
+   513→   513→-   /src/hooks — custom hooks (useClauseComparison, useDraftStatus,
+   514→   514→    useAuditTrail)
+   515→   515→
+   516→   516→-   /src/utils — fungsi utiliti (pemetaan klausa-ke-medan, pengesanan
+   517→   517→    percanggahan, penjanaan format 5-bahagian)
+   518→   518→
+   519→   519→-   /src/routes — konfigurasi React Router dan laluan dilindungi
+   520→   520→    mengikut peranan (BU / SLO / Admin)
+   521→   521→
+   522→   522→9. Struktur Data Dummy (Dummy Database Schema)
+   523→   523→
+   524→   524→9.1 Entiti: Templat Perjanjian Penyewaan (Templates)
+   525→   525→
+   526→   526→  -----------------------------------------------------------------------
+   527→   527→  Medan              Jenis Data       Perihal
+   528→   528→  ------------------ ---------------- -----------------------------------
+   529→   529→  id                 String/Number    Pengecam unik templat
+   530→   530→
+   531→   531→  name               String           Nama templat (contohnya: "Templat
+   532→   532→                                      Perjanjian Penyewaan PERKESO — Tuan
+   533→   533→                                      Tanah")
+   534→   534→
+   535→   535→  version            String           Versi templat
+   536→   536→
+   537→   537→  clauses            Array<Object>    Senarai klausa templat (nombor,
+   538→   538→                                      tajuk, teks asal, medan terma
+   539→   539→                                      berkaitan)
+   540→   540→
+   541→   541→  status             String (enum)    active / archived
+   542→   542→  -----------------------------------------------------------------------
+   543→   543→
+   544→   544→9.2 Entiti: Klausa Templat (Template Clauses)
+   545→   545→
+   546→   546→  -----------------------------------------------------------------------
+   547→   547→  Medan              Jenis Data       Perihal
+   548→   548→  ------------------ ---------------- -----------------------------------
+   549→   549→  id                 String/Number    Pengecam unik klausa
+   550→   550→
+   551→   551→  templateId         String           Rujukan kepada ID templat
+   552→   552→
+   553→   553→  clauseNumber       String           Nombor klausa (contohnya "4.1")
+   554→   554→
+   555→   555→  title              String           Tajuk klausa (contohnya "Kadar
+   556→   556→                                      Sewa")
+   557→   557→
+   558→   558→  originalText       String           Teks asal klausa dalam templat
+   559→   559→
+   560→   560→  mappedField        String           Medan terma komersial berkaitan
+   561→   561→                                      (contohnya "kadarSewa")
+   562→   562→  -----------------------------------------------------------------------
+   563→   563→
+   564→   564→9.3 Entiti: Surat Tawaran Penyewaan (Offer Letters)
+   565→   565→
+   566→   566→  ------------------------------------------------------------------------
+   567→   567→  Medan               Jenis Data       Perihal
+   568→   568→  ------------------- ---------------- -----------------------------------
+   569→   569→  id                  String/Number    Pengecam unik surat tawaran
+   570→   570→
+   571→   571→  tenantName          String           Nama pihak penyewa
+   572→   572→
+   573→   573→  rentalRate          Number           Kadar sewa bulanan
+   574→   574→
+   575→   575→  tenancyPeriod       String           Tempoh penyewaan
+   576→   576→
+   577→   577→  commencementDate    String (ISO      Tarikh kuat kuasa
+   578→   578→                      Date)            
+   579→   579→
+   580→   580→  deposit             Number           Jumlah deposit
+   581→   581→
+   582→   582→  premisesUse         String           Kegunaan premis
+   583→   583→
+   584→   584→  maintenanceTerms    String           Terma penyelenggaraan
+   585→   585→
+   586→   586→  utilitiesTerms      String           Terma utiliti
+   587→   587→
+   588→   588→  renewalTerms        String           Terma pembaharuan
+   589→   589→
+   590→   590→  terminationTerms    String           Terma penamatan
+   591→   591→
+   592→   592→  defaultTerms        String           Klausa ingkar
+   593→   593→
+   594→   594→  specialConditions   String           Syarat khas (jika ada)
+   595→   595→  ------------------------------------------------------------------------
+   596→   596→
+   597→   597→9.4 Entiti: Draf (Drafts)
+   598→   598→
+   599→   599→  -----------------------------------------------------------------------
+   600→   600→  Medan              Jenis Data       Perihal
+   601→   601→  ------------------ ---------------- -----------------------------------
+   602→   602→  id                 String/Number    Pengecam unik draf
+   603→   603→
+   604→   604→  templateId         String           Rujukan kepada templat digunakan
+   605→   605→
+   606→   606→  offerLetterId      String           Rujukan kepada Surat Tawaran
+   607→   607→                                      Penyewaan berkaitan
+   608→   608→
+   609→   609→  createdBy          String           ID pengguna BU yang mencipta draf
+   610→   610→
+   611→   611→  status             String (enum)    draft / pending_review / returned /
+   612→   612→                                      approved / rejected
+   613→   613→
+   614→   614→  createdDate        String (ISO      Tarikh draf dicipta
+   615→   615→                     Date)            
+   616→   616→
+   617→   617→  lastUpdated        String (ISO      Tarikh kemas kini terakhir
+   618→   618→                     Date)            
+   619→   619→  -----------------------------------------------------------------------
+   620→   620→
+   621→   621→9.5 Entiti: Pindaan Klausa Draf (Draft Clause Amendments)
+   622→   622→
+   623→   623→  ---------------------------------------------------------------------------
+   624→   624→  Medan                  Jenis Data       Perihal
+   625→   625→  ---------------------- ---------------- -----------------------------------
+   626→   626→  id                     String/Number    Pengecam unik rekod pindaan
+   627→   627→
+   628→   628→  draftId                String           Rujukan kepada ID draf
+   629→   629→
+   630→   630→  clauseId               String           Rujukan kepada ID klausa templat
+   631→   631→
+   632→   632→  issueIdentified        String           Isu dikenal pasti
+   633→   633→                                          (percanggahan/ketiadaan maklumat)
+   634→   634→
+   635→   635→  reasonForAmendment     String           Sebab pindaan diperlukan
+   636→   636→
+   637→   637→  offerLetterReference   String           Rujukan peruntukan dalam Surat
+   638→   638→                                          Tawaran Penyewaan
+   639→   639→
+   640→   640→  amendedText            String           Draf teks klausa dipinda (atau
+   641→   641→                                          [Untuk Pengesahan Business Unit])
+   642→   642→
+   643→   643→  sloDecision            String (enum)    pending / accepted / edited /
+   644→   644→                                          rejected
+   645→   645→
+   646→   646→  sloComment             String           Ulasan SLO (jika ada)
+   647→   647→  ---------------------------------------------------------------------------
+   648→   648→
+   649→   649→9.6 Entiti: Jejak Audit (Audit Log)
+   650→   650→
+   651→   651→  -----------------------------------------------------------------------
+   652→   652→  Medan              Jenis Data       Perihal
+   653→   653→  ------------------ ---------------- -----------------------------------
+   654→   654→  id                 String/Number    Pengecam unik rekod audit
+   655→   655→
+   656→   656→  draftId            String           Rujukan kepada ID draf
+   657→   657→
+   658→   658→  userId             String           Pengguna yang membuat tindakan
+   659→   659→
+   660→   660→  action             String           Perihal tindakan (contohnya "Draf
+   661→   661→                                      dihantar untuk semakan")
+   662→   662→
+   663→   663→  timestamp          String (ISO      Cap masa tindakan
+   664→   664→                     DateTime)        
+   665→   665→  -----------------------------------------------------------------------
+   666→   666→
+   667→   667→10. Spesifikasi Antara Muka Pengguna (UI/UX)
+   668→   668→
+   669→   669→10.1 Prinsip Reka Bentuk
+   670→   670→
+   671→   671→-   Bagi BU: borang berpandu langkah demi langkah (wizard-style), bahasa
+   672→   672→    mudah, petunjuk (tooltip) ringkas bagi setiap medan terma komersial.
+   673→   673→
+   674→   674→-   Bagi SLO: paparan padat, sisi-bersisi (side-by-side) antara klausa
+   675→   675→    asal templat dan cadangan pindaan, dengan penekanan warna bagi
+   676→   676→    perkataan/frasa berbeza (highlight diff).
+   677→   677→
+   678→   678→-   Status draf mesti kelihatan jelas pada setiap paparan menggunakan
+   679→   679→    lencana warna (badge): Draf (kelabu), Menunggu Semakan (kuning),
+   680→   680→    Dikembalikan (jingga), Diluluskan (hijau), Ditolak (merah).
+   681→   681→
+   682→   682→-   Skema warna konsisten mencerminkan jenama Pepper Labs [Untuk
+   683→   683→    Pengesahan Business Unit — palet warna rasmi].
+   684→   684→
+   685→   685→10.2 Senarai Skrin Utama
+   686→   686→
+   687→   687→  ------------------------------------------------------------------------
+   688→   688→  Skrin                Perihal Ringkas                     Peranan
+   689→   689→                                                           Berkaitan
+   690→   690→  -------------------- ----------------------------------- ---------------
+   691→   691→  Skrin Log Masuk      Borang log masuk dengan e-mel dan   Semua peranan
+   692→   692→                       kata laluan dummy                   
+   693→   693→
+   694→   694→  Papan Pemuka BU      Senarai draf dihantar berserta      Business Unit
+   695→   695→                       status dan tindakan seterusnya      
+   696→   696→
+   697→   697→  Cipta Draf Baharu    Borang berpandu memilih templat dan Business Unit
+   698→   698→                       mengisi terma Surat Tawaran         
+   699→   699→                       Penyewaan                           
+   700→   700→
+   701→   701→  Paparan Cadangan     Paparan 5 bahagian (Ringkasan,      Business Unit
+   702→   702→  Pindaan (BU)         Semakan Klausa, Klausa Dipinda,     
+   703→   703→                       Pemerhatian, Jadual) sebelum        
+   704→   704→                       dihantar                            
+   705→   705→
+   706→   706→  Papan Pemuka SLO     Senarai draf menunggu semakan       Senior Legal
+   707→   707→                       mengikut keutamaan                  Officer
+   708→   708→
+   709→   709→  Skrin Semakan Klausa Paparan klausa asal vs cadangan     Senior Legal
+   710→   710→  (Side-by-Side)       pindaan, butang terima/pinda/tolak, Officer
+   711→   711→                       ruang ulasan                        
+   712→   712→
+   713→   713→  Skrin Kelulusan      Ringkasan keseluruhan draf dengan   Senior Legal
+   714→   714→  Akhir                butang Luluskan / Kembalikan /      Officer
+   715→   715→                       Tolak                               
+   716→   716→
+   717→   717→  Sejarah & Jejak      Garis masa tindakan bagi sesuatu    SLO, Admin
+   718→   718→  Audit                draf                                
+   719→   719→
+   720→   720→  Pengurusan Templat   Senarai dan penyuntingan templat    Admin
+   721→   721→                       Perjanjian Penyewaan serta klausa   
+   722→   722→  ------------------------------------------------------------------------
+   723→   723→
+   724→   724→11. Pelan Pembangunan Berperingkat (Development Roadmap)
+   725→   725→
+   726→   726→  ------------------------------------------------------------------------
+   727→   727→  Fasa               Skop Kerja                               Anggaran
+   728→   728→                                                              Tempoh
+   729→   729→  ------------------ ---------------------------------------- ------------
+   730→   730→  Fasa 1 —           Persediaan projek React, struktur        1 minggu
+   731→   731→  Persediaan         folder, reka bentuk data dummy (templat, 
+   732→   732→                     klausa, draf), integrasi z.ai/GLM 5.2    
+   733→   733→
+   734→   734→  Fasa 2 — Input BU  Pembangunan borang input Surat Tawaran   1.5 minggu
+   735→   735→  & Templat          Penyewaan, modul pemilihan/pengurusan    
+   736→   736→                     templat                                  
+   737→   737→
+   738→   738→  Fasa 3 — Enjin     Pembangunan logik perbandingan           2 minggu
+   739→   739→  Perbandingan       klausa-vs-terma, pengesanan              
+   740→   740→                     percanggahan, penjanaan format 5         
+   741→   741→                     bahagian                                 
+   742→   742→
+   743→   743→  Fasa 4 — Semakan   Pembangunan paparan sisi-bersisi, fungsi 2 minggu
+   744→   744→  SLO                terima/pinda/tolak, ulasan klausa        
+   745→   745→
+   746→   746→  Fasa 5 — Aliran    Pembangunan status draf, papan pemuka    1.5 minggu
+   747→   747→  Kerja & Papan      BU/SLO/Admin, notifikasi                 
+   748→   748→  Pemuka                                                      
+   749→   749→
+   750→   750→  Fasa 6 — Jejak     Pembangunan log audit, garis masa,       1 minggu
+   751→   751→  Audit & Eksport    eksport dokumen akhir                    
+   752→   752→
+   753→   753→  Fasa 7 — Ujian &   Ujian unit, ujian kebolehgunaan bersama  1 minggu
+   754→   754→  Penambahbaikan     wakil BU dan SLO sebenar, pembetulan     
+   755→   755→                     pepijat                                  
+   756→   756→
+   757→   757→  Fasa 8 —           Persediaan demonstrasi kepada pihak      0.5 minggu
+   758→   758→  Demonstrasi        berkepentingan Pepper Labs               
+   759→   759→  ------------------------------------------------------------------------
+   760→   760→
+   761→   761→Nota: Anggaran tempoh adalah cadangan awal dan tertakluk kepada
+   762→   762→pengesahan lanjut oleh pasukan projek [Untuk Pengesahan Business Unit].
+   763→   763→
+   764→   764→12. Kriteria Penerimaan (Acceptance Criteria)
+   765→   765→
+   766→   766→47. BU boleh mencipta draf baharu, memilih templat, dan mengisi terma
+   767→   767→    Surat Tawaran Penyewaan melalui borang berpandu tanpa memerlukan
+   768→   768→    bantuan teknikal.
+   769→   769→
+   770→   770→48. Sistem menjana cadangan pindaan mengikut format 5 bahagian yang
+   771→   771→    tepat dan konsisten dengan data yang dimasukkan BU.
+   772→   772→
+   773→   773→49. Sebarang maklumat yang tiada dalam Surat Tawaran Penyewaan
+   774→   774→    ditandakan sebagai [Untuk Pengesahan Business Unit] dan bukan
+   775→   775→    diandaikan oleh sistem.
+   776→   776→
+   777→   777→50. SLO boleh menyemak setiap klausa dalam paparan sisi-bersisi,
+   778→   778→    menambah ulasan, dan membuat keputusan (terima/pinda/tolak) bagi
+   779→   779→    setiap klausa dengan pantas.
+   780→   780→
+   781→   781→51. Status draf dikemas kini dengan tepat mengikut tindakan SLO
+   782→   782→    (Diluluskan/Dikembalikan/Ditolak) dan dipaparkan dengan jelas kepada
+   783→   783→    BU.
+   784→   784→
+   785→   785→52. Jejak audit merekod setiap tindakan penting dengan cap masa dan
+   786→   786→    pengguna yang tepat.
+   787→   787→
+   788→   788→53. Draf yang diluluskan boleh dieksport dalam format dokumen yang kekal
+   789→   789→    mengekalkan struktur 5 bahagian.
+   790→   790→
+   791→   791→54. Aplikasi berfungsi lancar tanpa ralat kritikal pada pelayar utama
+   792→   792→    dan responsif pada desktop serta tablet.
+   793→   793→
+   794→   794→13. Andaian dan Kebergantungan
+   795→   795→
+   796→   796→13.1 Andaian
+   797→   797→
+   798→   798→-   Templat Perjanjian Penyewaan sedia ada (contohnya templat PERKESO)
+   799→   799→    akan dibekalkan dalam format berstruktur (klausa bernombor) untuk
+   800→   800→    dimuatkan sebagai data dummy.
+   801→   801→
+   802→   802→-   Format Surat Tawaran Penyewaan adalah agak konsisten dari segi medan
+   803→   803→    terma komersial merentasi kes-kes berbeza [Untuk Pengesahan Business
+   804→   804→    Unit].
+   805→   805→
+   806→   806→-   Pada peringkat prototaip ini, kelulusan akhir SLO dalam sistem
+   807→   807→    adalah simulasi status sahaja dan tidak menggantikan proses
+   808→   808→    tandatangan/kelulusan rasmi organisasi.
+   809→   809→
+   810→   810→-   Akses kepada platform z.ai dan model GLM 5.2 disediakan dan
+   811→   811→    berfungsi sepanjang tempoh pembangunan [Untuk Pengesahan Business
+   812→   812→    Unit — lesen/akaun z.ai].
+   813→   813→
+   814→   814→13.2 Kebergantungan
+   815→   815→
+   816→   816→-   Ketersediaan sekurang-kurangnya satu templat Perjanjian Penyewaan
+   817→   817→    sebenar (disamarkan) untuk dijadikan asas data dummy yang realistik.
+   818→   818→
+   819→   819→-   Input dan maklum balas daripada sekurang-kurangnya seorang wakil
+   820→   820→    Senior Legal Officer semasa fasa ujian kebolehgunaan bagi memastikan
+   821→   821→    aliran kerja semakan praktikal.
+   822→   822→
+   823→   823→-   Kelulusan reka bentuk jenama (branding) daripada pihak Business Unit
+   824→   824→    Pepper Labs [Untuk Pengesahan Business Unit].
+   825→   825→
+   826→   826→14. Risiko Projek
+   827→   827→
+   828→   828→  ------------------------------------------------------------------------
+   829→   829→  Risiko                    Kesan       Cadangan Mitigasi
+   830→   830→  ------------------------- ----------- ----------------------------------
+   831→   831→  Cadangan pindaan yang     Tinggi      Sistem mesti memaparkan penafian
+   832→   832→  dijana sistem/AI dianggap             jelas bahawa semua cadangan
+   833→   833→  sebagai nasihat                       tertakluk kepada kelulusan SLO;
+   834→   834→  undang-undang muktamad                status draf tidak boleh dianggap
+   835→   835→  oleh BU tanpa semakan SLO             'muktamad' sehingga diluluskan SLO
+   836→   836→
+   837→   837→  Data dummy templat tidak  Sederhana   Dapatkan sekurang-kurangnya satu
+   838→   838→  mencerminkan struktur                 templat sebenar (disamarkan)
+   839→   839→  klausa sebenar dengan                 sebagai rujukan struktur data
+   840→   840→  tepat                                 
+   841→   841→
+   842→   842→  Kod/logik perbandingan    Sederhana   Semakan kod wajib dan ujian unit
+   843→   843→  yang dijana GLM 5.2                   menyeluruh terhadap logik pemetaan
+   844→   844→  tersilap memetakan klausa             klausa
+   845→   845→  kepada medan terma yang               
+   846→   846→  salah                                 
+   847→   847→
+   848→   848→  Skop meleret (scope       Sederhana   Kekalkan skop mengikut dokumen PRD
+   849→   849→  creep) — permintaan                   ini; permintaan tambahan melalui
+   850→   850→  tambahan jenis kontrak                proses pengesahan Business Unit
+   851→   851→  lain di luar Perjanjian               
+   852→   852→  Penyewaan                             
+   853→   853→
+   854→   854→  SLO mendapati paparan     Rendah      Sertakan wakil SLO dalam ujian
+   855→   855→  sisi-bersisi tidak                    kebolehgunaan awal (Fasa 7) untuk
+   856→   856→  mencukupi untuk semakan               maklum balas reka bentuk
+   857→   857→  mendalam                              
+   858→   858→  ------------------------------------------------------------------------
+   859→   859→
+   860→   860→15. Kesimpulan
+   861→   861→
+   862→   862→Dokumen ini menggantikan sepenuhnya PRD terdahulu (Versi 1.0 — Sistem
+   863→   863→Pengurusan Pembelajaran) dan menggariskan keperluan bagi Sistem Semakan
+   864→   864→dan Pindaan Klausa Perjanjian Penyewaan yang direka khusus untuk
+   865→   865→memudahkan Business Unit menyediakan draf dengan tepat berdasarkan Surat
+   866→   866→Tawaran Penyewaan, serta memudahkan Senior Legal Officer menyemak dan
+   867→   867→mengesahkan (vet) draf tersebut secara cekap dan telus. Sistem ini
+   868→   868→dibina menggunakan React.js dan pangkalan data dummy, dipercepatkan
+   869→   869→menggunakan platform z.ai dengan model GLM 5.2. Pasukan kejuruteraan
+   870→   870→perisian Pepper Labs dijangka merujuk dokumen ini sepanjang kitaran
+   871→   871→pembangunan. Sebarang perubahan skop hendaklah didokumentasikan melalui
+   872→   872→pindaan rasmi kepada dokumen ini.
+   873→   873→

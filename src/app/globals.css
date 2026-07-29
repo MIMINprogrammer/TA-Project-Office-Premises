@@ -1,0 +1,281 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+/* =========================================================================
+   Pepper Labs — Tenancy Clause Review System
+   Brand palette: Emerald/Teal (primary) + Amber/Gold (accent)
+   Glassmorphism design language
+   ========================================================================= */
+:root {
+  --radius: 0.875rem;
+
+  /* App background base */
+  --background: oklch(0.985 0.008 165);          /* near-white with emerald tint */
+  --foreground: oklch(0.21 0.03 165);
+
+  /* Surfaces (glass) */
+  --card: oklch(1 0 0 / 0.72);
+  --card-foreground: oklch(0.21 0.03 165);
+  --popover: oklch(1 0 0 / 0.88);
+  --popover-foreground: oklch(0.21 0.03 165);
+
+  /* Brand primary — deep emerald */
+  --primary: oklch(0.52 0.13 162);
+  --primary-foreground: oklch(0.99 0.01 165);
+
+  /* Secondary — soft emerald mist */
+  --secondary: oklch(0.95 0.025 165);
+  --secondary-foreground: oklch(0.3 0.05 162);
+
+  --muted: oklch(0.96 0.012 165);
+  --muted-foreground: oklch(0.5 0.02 165);
+
+  /* Accent — amber/gold */
+  --accent: oklch(0.93 0.06 80);
+  --accent-foreground: oklch(0.35 0.08 70);
+
+  --destructive: oklch(0.58 0.22 27);
+  --border: oklch(0.9 0.02 165 / 0.6);
+  --input: oklch(0.92 0.015 165 / 0.7);
+  --ring: oklch(0.52 0.13 162);
+
+  --chart-1: oklch(0.55 0.13 162);   /* emerald */
+  --chart-2: oklch(0.7 0.15 75);     /* amber */
+  --chart-3: oklch(0.6 0.14 230);    /* teal-cyan */
+  --chart-4: oklch(0.65 0.2 350);    /* rose */
+  --chart-5: oklch(0.72 0.16 145);   /* green */
+
+  --sidebar: oklch(0.99 0.006 165 / 0.8);
+  --sidebar-foreground: oklch(0.21 0.03 165);
+  --sidebar-primary: oklch(0.52 0.13 162);
+  --sidebar-primary-foreground: oklch(0.99 0.01 165);
+  --sidebar-accent: oklch(0.93 0.06 80);
+  --sidebar-accent-foreground: oklch(0.35 0.08 70);
+  --sidebar-border: oklch(0.9 0.02 165 / 0.5);
+  --sidebar-ring: oklch(0.52 0.13 162);
+}
+
+.dark {
+  --background: oklch(0.16 0.02 170);
+  --foreground: oklch(0.96 0.01 165);
+  --card: oklch(0.22 0.03 170 / 0.6);
+  --card-foreground: oklch(0.96 0.01 165);
+  --popover: oklch(0.2 0.025 170 / 0.92);
+  --popover-foreground: oklch(0.96 0.01 165);
+  --primary: oklch(0.7 0.14 162);
+  --primary-foreground: oklch(0.16 0.02 170);
+  --secondary: oklch(0.28 0.03 168 / 0.6);
+  --secondary-foreground: oklch(0.96 0.01 165);
+  --muted: oklch(0.27 0.02 168);
+  --muted-foreground: oklch(0.72 0.02 165);
+  --accent: oklch(0.4 0.07 70);
+  --accent-foreground: oklch(0.95 0.05 80);
+  --destructive: oklch(0.7 0.19 22);
+  --border: oklch(1 0 0 / 10%);
+  --input: oklch(1 0 0 / 12%);
+  --ring: oklch(0.7 0.14 162);
+  --chart-1: oklch(0.65 0.14 162);
+  --chart-2: oklch(0.75 0.16 75);
+  --chart-3: oklch(0.68 0.15 200);
+  --chart-4: oklch(0.7 0.2 350);
+  --chart-5: oklch(0.74 0.16 145);
+  --sidebar: oklch(0.18 0.025 170 / 0.8);
+  --sidebar-foreground: oklch(0.96 0.01 165);
+  --sidebar-primary: oklch(0.7 0.14 162);
+  --sidebar-primary-foreground: oklch(0.16 0.02 170);
+  --sidebar-accent: oklch(0.32 0.06 70);
+  --sidebar-accent-foreground: oklch(0.95 0.05 80);
+  --sidebar-border: oklch(1 0 0 / 10%);
+  --sidebar-ring: oklch(0.7 0.14 162);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html, body {
+    @apply bg-background text-foreground;
+    min-height: 100%;
+  }
+}
+
+/* =========================================================================
+   GLASSMORPHISM utilities
+   ========================================================================= */
+@layer utilities {
+  /* Animated aurora background — fixed, behind everything */
+  .glass-aurora {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    overflow: hidden;
+    background:
+      radial-gradient(60rem 60rem at 8% -10%, oklch(0.85 0.12 165 / 0.45), transparent 60%),
+      radial-gradient(50rem 50rem at 100% 0%, oklch(0.88 0.1 75 / 0.35), transparent 55%),
+      radial-gradient(55rem 55rem at 50% 120%, oklch(0.82 0.1 200 / 0.3), transparent 60%),
+      var(--background);
+  }
+  .dark .glass-aurora {
+    background:
+      radial-gradient(60rem 60rem at 8% -10%, oklch(0.4 0.12 162 / 0.45), transparent 60%),
+      radial-gradient(50rem 50rem at 100% 0%, oklch(0.42 0.1 70 / 0.35), transparent 55%),
+      radial-gradient(55rem 55rem at 50% 120%, oklch(0.35 0.1 200 / 0.3), transparent 60%),
+      var(--background);
+  }
+
+  /* Core glass surface */
+  .glass {
+    background: var(--card);
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid var(--border);
+    box-shadow:
+      0 1px 0 0 oklch(1 0 0 / 0.5) inset,
+      0 10px 30px -12px oklch(0.3 0.05 165 / 0.25);
+  }
+  .dark .glass {
+    box-shadow:
+      0 1px 0 0 oklch(1 0 0 / 0.08) inset,
+      0 12px 36px -14px oklch(0 0 0 / 0.6);
+  }
+
+  /* Stronger glass for panels/dialogs */
+  .glass-strong {
+    background: var(--popover);
+    backdrop-filter: blur(28px) saturate(160%);
+    -webkit-backdrop-filter: blur(28px) saturate(160%);
+    border: 1px solid var(--border);
+    box-shadow:
+      0 1px 0 0 oklch(1 0 0 / 0.6) inset,
+      0 24px 60px -20px oklch(0.3 0.05 165 / 0.35);
+  }
+  .dark .glass-strong {
+    box-shadow:
+      0 1px 0 0 oklch(1 0 0 / 0.1) inset,
+      0 24px 60px -20px oklch(0 0 0 / 0.7);
+  }
+
+  /* Subtle glass tinted by primary */
+  .glass-primary {
+    background: color-mix(in oklch, var(--primary) 8%, var(--card));
+    backdrop-filter: blur(18px) saturate(140%);
+    -webkit-backdrop-filter: blur(18px) saturate(140%);
+    border: 1px solid color-mix(in oklch, var(--primary) 25%, var(--border));
+  }
+
+  .glass-hover {
+    transition: box-shadow 0.25s ease, transform 0.25s ease, border-color 0.25s ease;
+  }
+  .glass-hover:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 1px 0 0 oklch(1 0 0 / 0.6) inset,
+      0 22px 48px -18px oklch(0.3 0.05 165 / 0.4);
+    border-color: color-mix(in oklch, var(--primary) 35%, var(--border));
+  }
+
+  /* Gradient text for headings */
+  .text-gradient-brand {
+    background: linear-gradient(120deg, var(--primary), var(--chart-2));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* Diff highlighting (side-by-side clause review) */
+  .diff-add {
+    background: color-mix(in oklch, var(--chart-1) 22%, transparent);
+    border-radius: 4px;
+    padding: 0 2px;
+    color: oklch(0.35 0.1 160);
+  }
+  .dark .diff-add {
+    color: oklch(0.85 0.12 160);
+  }
+  .diff-placeholder {
+    background: color-mix(in oklch, var(--chart-2) 30%, transparent);
+    border-radius: 4px;
+    padding: 0 4px;
+    font-style: italic;
+    color: oklch(0.4 0.1 70);
+    font-weight: 600;
+  }
+  .dark .diff-placeholder {
+    color: oklch(0.88 0.1 75);
+  }
+  .diff-conflict {
+    background: color-mix(in oklch, var(--destructive) 18%, transparent);
+    border-radius: 4px;
+    padding: 0 2px;
+  }
+
+  /* Custom scrollbar for long lists */
+  .scroll-glass {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in oklch, var(--primary) 40%, transparent) transparent;
+  }
+  .scroll-glass::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  .scroll-glass::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scroll-glass::-webkit-scrollbar-thumb {
+    background: color-mix(in oklch, var(--primary) 35%, transparent);
+    border-radius: 999px;
+  }
+  .scroll-glass::-webkit-scrollbar-thumb:hover {
+    background: color-mix(in oklch, var(--primary) 55%, transparent);
+  }
+}
+
+/* Framer-motion friendly focus rings */
+@layer base {
+  :focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+  }
+}
