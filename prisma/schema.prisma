@@ -1,13 +1,19 @@
 // Prisma schema for Pepper Labs — Tenancy Agreement Clause Review & Amendment System
-// PRD v2.0 (replaces v1.0 LMS). Dummy database (SQLite) per PRD Section 8.2.
+// PRD v2.0 (replaces v1.0 LMS). PostgreSQL (Supabase) backend.
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  // directUrl is used for migrations (db:push / db:migrate) which need a
+  // non-pooled connection. When using Supabase's connection pooler (PgBouncer),
+  // set DATABASE_URL to the :6543 (transaction) pooler URL and DIRECT_URL to
+  // the :5432 (session) pooler URL. If DIRECT_URL is not set, Prisma falls
+  // back to DATABASE_URL (fine for local SQLite or non-pooled Postgres).
+  directUrl = env("DIRECT_URL")
 }
 
 // ---------------------------------------------------------------------------
