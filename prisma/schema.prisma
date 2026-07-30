@@ -6,14 +6,14 @@ generator client {
 }
 
 datasource db {
-  provider  = "sqlite"
+  provider  = "postgresql"
   url       = env("DATABASE_URL")
   // directUrl is used for migrations (db:push / db:migrate) which need a
   // non-pooled connection. When using Supabase's connection pooler (PgBouncer),
   // set DATABASE_URL to the :6543 (transaction) pooler URL and DIRECT_URL to
   // the :5432 (session) pooler URL. If DIRECT_URL is not set, Prisma falls
-  // back to DATABASE_URL (fine for local SQLite or non-pooled Postgres).
-
+  // back to DATABASE_URL (fine for non-pooled Postgres).
+  directUrl = env("DIRECT_URL")
 }
 
 // ---------------------------------------------------------------------------

@@ -12,7 +12,8 @@ if (!process.env.DATABASE_URL) {
   console.error(
     "\n❌ DATABASE_URL is not set.\n\n" +
       "Fix: create a .env file in the project root (next to package.json) with:\n\n" +
-      '  DATABASE_URL=postgresql://postgres:YOUR_PASSWORD@db.YOUR_PROJECT_REF.supabase.co:5432/postgres\n\n' +
+      "  DATABASE_URL=postgresql://postgres.PROJECT_REF:PASSWORD@aws-0-ap-southeast-1.pooler.supabase.com:6543/postgres?pgbouncer=true&connection_limit=1\n" +
+      "  DIRECT_URL=postgresql://postgres.PROJECT_REF:PASSWORD@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres\n\n" +
       "Then re-run: bun run db:seed\n"
   );
   process.exit(1);
